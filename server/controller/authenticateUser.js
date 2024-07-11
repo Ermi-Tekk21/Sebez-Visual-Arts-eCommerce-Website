@@ -19,6 +19,12 @@ const authenticateUser = async (req, res) => {
       req.body.password,
       user.password
     );
+
+// if password is not hasshed
+    // const validPassword = 
+    //   req.body.password ===
+    //   user.password
+    
     if (!validPassword) {
       return res.status(400).json({ error: "Password does not match" });
     }

@@ -25,6 +25,7 @@ const create = async (req, res) => {
     // Create a new user object with the provided data, excluding the password
     user = new User(_.pick(req.body, ["name", "email", "address", "role"]));
     user.password = hashedPassword;
+    // user.password = req.body.password; if password is not hashed
 
     // Save the new user to the database
     await user.save();
