@@ -1,11 +1,11 @@
-"use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Logo from "../../../public/assets/images/sebezLogo.png";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import cart from "../../../public/assets/icons/cart.svg";
 import useAuthStore from "@/stores/AuthStore";
+import Cart from "./cart";
+import ProductDetail from "./product-detail";
 
 interface Product {
   category: string;
@@ -96,13 +96,13 @@ const NavBar: React.FC = () => {
   };
 
   const pathname = usePathname();
+  const ishome = pathname === "/";
   const isSignupRoute = pathname.includes("/auth/signup");
   const isAuthRoute = pathname.includes("/auth");
-  const ishome = pathname === "/" 
-
 
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const logout = useAuthStore((state) => state.logout);
+
   return (
     <main>
       <div
@@ -110,11 +110,12 @@ const NavBar: React.FC = () => {
           showNav ? "translate-y-0" : "-translate-y-full"
         } bg-custom-green-a shadow-md flex items-center justify-around pt-4 pb-4 font-semibold z-40 fixed w-full top-0 transition-transform duration-300 ease-in-out `}
       >
-        <Link href="/"><div className="cursor-pointer">
-          <Image src={Logo} alt="Sebez Logo" width={130} height={80} />
-        </div>
+        <Link href="/">
+          <div className="cursor-pointer">
+            <Image src={Logo} alt="Sebez Logo" width={130} height={80} />
+          </div>
         </Link>
-        
+
         {!isAuthenticated && (
           <div className="cursor-pointer list-none flex justify-around gap-16 opacity-70">
             <nav className="hover:text-custom-green-d hover:underline">
@@ -144,8 +145,8 @@ const NavBar: React.FC = () => {
                 onChange={handleSearchChange}
               />
               {isProductsDropdownOpen && (
-                <div className="absolute top-14 z-10 right-0 bg-white border border-gray-300 shadow-md">
-                  <h3 className="bg-gray-600 text-white p-4">
+                <div className="absolute top-14 z-10 right-0 bg-white border border-gray-300 shadow-md h-96 overflow-y-scroll">
+                  <h3 className="bg-gray-600 text-white p-4 sticky top-0">
                     Product Categories
                   </h3>
                   <ul className="list-none">
@@ -159,19 +160,10 @@ const NavBar: React.FC = () => {
               )}
             </div>
           )}
-
+          {isAuthenticated && <Cart />}
           <nav className="flex gap-8 align-center">
             {isAuthenticated ? (
               <>
-                <Link href="#">
-                  <Image
-                    src={cart}
-                    alt="Sebez Logo"
-                    className=""
-                    width={30}
-                    height={30}
-                  />
-                </Link>
                 <button
                   onClick={logout}
                   className="bg-custom-green-b text-white px-3 py-2 rounded"
@@ -182,12 +174,13 @@ const NavBar: React.FC = () => {
             ) : (
               // Render other components when not authenticated
               <div>
-                {ishome && <Link href="/auth/signin">
+                {ishome && (
+                  <Link href="/auth/signin">
                     <button className="bg-custom-green-b text-white px-3 py-2 rounded">
                       Get started
                     </button>
                   </Link>
-                }
+                )}
                 {isSignupRoute ? (
                   <Link href="/auth/signin">
                     <button className="bg-custom-green-b text-white px-3 py-2 rounded">
@@ -206,6 +199,7 @@ const NavBar: React.FC = () => {
                 )}
               </div>
             )}
+            
           </nav>
         </div>
       </div>

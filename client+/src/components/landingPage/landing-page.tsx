@@ -11,7 +11,7 @@ const LandingPage: React.FC = () => {
   return (
     <main
       id="home"
-      className="relative h-screen flex items-center justify-center"
+      className=" relative h-screen flex items-center justify-center"
     >
       <div className="absolute inset-0">
         <Image

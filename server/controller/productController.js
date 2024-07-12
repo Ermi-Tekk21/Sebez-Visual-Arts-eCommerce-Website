@@ -3,35 +3,35 @@ const _ = require("lodash");
 
 const create = async (req, res) => {
   if (req.user.role !== "admin")
-    return res.status(401).send("admin only opration.");
+    return res.status(401).send("Admin only operation.");
 
   try {
     const { error } = validateProduct(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     let product = await Product.findOne({ item_name: req.body.item_name });
-    if (product) return res.status(400).send("product already exists");
+    if (product) return res.status(400).send("Product already exists.");
 
-    // Create a new product object with the provided data
-    product = new Product(
-      _.pick(req.body, [
-        "category",
-        "item_name",
-        "description",
-        "quantity",
-        "price",
-      ])
-    );
+    // Create a new product object with the provided data including imageUrl
+    product = new Product({
+      category: req.body.category,
+      item_name: req.body.item_name,
+      description: req.body.description,
+      quantity: req.body.quantity,
+      price: req.body.price,
+      imageUrl: req.body.imageUrl  // Include imageUrl field
+    });
 
     await product.save();
 
-    res.send({ sucussfull: _.pick(product, ["category", "item_name"]) });
+    res.send({ success: _.pick(product, ["category", "item_name", "imageUrl"]) });
   } catch (err) {
     // Log the error and send a 500 response with a server error message
-    console.error("Error creating user:", err);
+    console.error("Error creating product:", err);
     res.status(500).send("Server Error");
   }
 };
+
 
 const fetch = async (req, res) => {
   try {

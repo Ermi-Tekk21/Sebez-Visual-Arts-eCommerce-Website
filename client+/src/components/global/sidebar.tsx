@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Expand, LogOut, Minimize, User } from "lucide-react";
+import { Expand, LogOut, Minimize, Delete } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import userTag from "../../../public/assets/icons/manage.svg";
 import productTag from "../../../public/assets/icons/products.svg";
 import profileTag from "../../../public/assets/icons/profile.svg";
 import useAuthStore from "@/stores/AuthStore";
+import prdList from '../../../public/assets/icons/listPrd.svg'
 
 const Sidebar: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -41,7 +42,7 @@ const Sidebar: React.FC = () => {
             <a className="text-white ">
               {isExpanded ? (
                 <div className="bordered shadow-md rounded-md px-3 border-[1px]">
-                  Users
+                  get Users
                 </div>
               ) : (
                 <div className="bg-white rounded-full p-1 hover:p-2">
@@ -55,11 +56,24 @@ const Sidebar: React.FC = () => {
           <a className="text-white">
             {isExpanded ? (
               <div className="bordered rounded-md px-3 shadow-md border-[1px]">
-                Products
+                add Products
               </div>
             ) : (
               <div className="bg-white rounded-full p-1 hover:p-2">
                 <Image src={productTag} alt="" className="text-white z-0" />
+              </div>
+            )}
+          </a>
+        </Link>
+        <Link href="/admin/getProducts" legacyBehavior>
+          <a className="text-white">
+            {isExpanded ? (
+              <div className="bordered shadow-md rounded-md px-3 border-[1px]">
+                get products
+              </div>
+            ) : (
+              <div className="bg-white rounded-full p-1 hover:p-2">
+                <Image src={prdList} alt="" className="text-white z-0" />
               </div>
             )}
           </a>
@@ -82,7 +96,7 @@ const Sidebar: React.FC = () => {
         </Link>
         <div className="text-white">
           {isExpanded ? (
-            <button className="bordered shadow-md rounded-md px-3 border-[1px]">
+            <button onClick={logout} className="bordered shadow-md rounded-md px-3 border-[1px]">
               Log out
             </button>
           ) : (

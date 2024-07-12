@@ -6,7 +6,7 @@ interface AuthState {
 }
 
 const useAuthStore = create<AuthState>((set) => ({
-  isAuthenticated: !!localStorage.getItem("token"), // Check if token exists in localStorage
+  isAuthenticated: !(!localStorage.getItem("token")), // Check if token exists in localStorage
   login: (token: string) => {
     localStorage.setItem("token", token); // Replace with actual token storage logic
     set({ isAuthenticated: true });

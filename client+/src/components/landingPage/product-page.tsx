@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ProductCard from "@/components/global/productCard";
-import BackgroundImage from "../../../public/assets/images/art-1.jpg";
-
 interface Product {
+  id: string;
   category: string;
   item_name: string;
   description: string;
   quantity: number;
   price: string;
+  imageUrl: string;
+  artist: string;
 }
 
 interface Category {
@@ -19,6 +20,7 @@ interface Category {
 const ProductPage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null); // State to track selected product
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,9 +38,8 @@ const ProductPage: React.FC = () => {
         const groupedCategories = groupProductsByCategory(data);
         setCategories(groupedCategories);
       } catch (error) {
-        // setError(message);
+        setError("Failed to fetch products");
         console.log(error);
-        
       } finally {
         setLoading(false);
       }
@@ -62,6 +63,11 @@ const ProductPage: React.FC = () => {
 
   const handleCategorySelect = (categoryName: string) => {
     setSelectedCategory(categoryName);
+    setSelectedProduct(null); // Reset selected product when changing category
+  };
+
+  const handleProductSelect = (product: Product) => {
+    setSelectedProduct(product);
   };
 
   if (loading) {
@@ -78,22 +84,12 @@ const ProductPage: React.FC = () => {
 
   return (
     <main className="relative min-h-screen bg-gray-900 text-white" id="product">
-      {/* Background Overlay */}
-      <div className="absolute inset-0">
-        {/* <Image
-          src={BackgroundImage}
-            alt="Background"
-            layout="fill"
-            objectFit="cover"
-            className="opacity-70"
-        /> */}
-      </div>
       <div className="absolute inset-0 opacity-80"></div>
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center">
         <h1 className="text-4xl font-serif text-center py-10">Find Your Desired Product</h1>
-        
+
         {/* Category Sidebar */}
         <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl bg-green-700 opacity-85 p-4 rounded-lg shadow-lg">
           <h2 className="text-xl font-bold text-white mb-4">Categories</h2>
@@ -111,21 +107,22 @@ const ProductPage: React.FC = () => {
             ))}
           </ul>
         </div>
-        
+
         {/* Selected Category Products */}
         <div className="mt-8 w-full max-w-full md:max-w-4xl p-6 lg:max-w-6xl xl:max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {selectedCategoryProducts.length > 0 ? (
             selectedCategoryProducts.map((product, index) => (
               <ProductCard
                 key={index}
-                id={index.toString()} // Use index as key for simplicity in demo
+                id={product._id}
                 title={product.item_name}
-                image={""} // You need to provide the image URL here
-                price={parseInt(product.price)} // Parse price as number if necessary
+                image={product.imageUrl}
+                price={parseFloat(product.price)}
                 description={product.description}
-                artist={""} // Provide artist name if available
+                artist={product.artist}
+                onSelect={() => handleProductSelect(product)} // Pass onSelect function
               />
-            ))  
+            ))
           ) : (
             <p className="text-lg text-gray-300 col-span-full text-center">
               {selectedCategory ? 'No products found in this category.' : 'Please select a category to view products.'}

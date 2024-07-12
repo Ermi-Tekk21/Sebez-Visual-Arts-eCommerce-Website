@@ -7,7 +7,7 @@ import BackgroundImage from "../../../../public/assets/images/hero.jpg";
 
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import useAuthStore from '@/stores/AuthStore';
+import useAuthStore from '../../../stores/AuthStore';
 
 const SignIn = () => {
   const [nameOrEmail, setNameOrEmail] = useState<string>('');
