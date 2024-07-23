@@ -6,15 +6,18 @@ interface AuthState {
 }
 
 const useAuthStore = create<AuthState>((set) => ({
-  isAuthenticated: !(!localStorage.getItem("token")), // Check if token exists in localStorage
+  isAuthenticated: typeof window !== 'undefined' && !!localStorage.getItem("token"), // Check if token exists in localStorage
   login: (token: string) => {
-    localStorage.setItem("token", token); // Replace with actual token storage logic
-    set({ isAuthenticated: true });
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("token", token); // Replace with actual token storage logic
+      set({ isAuthenticated: true });
+    }
   },
   logout: () => {
-    localStorage.removeItem("token");
-    set({ isAuthenticated: false });
-    window.location.reload();
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem("token");
+      set({ isAuthenticated: false });
+    }
   },
 }));
 

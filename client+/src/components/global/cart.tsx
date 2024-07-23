@@ -17,7 +17,7 @@ import { cn } from "../../../src/lib/utils";
 import Image from "next/image";
 import cartSvg from "../../../public/assets/icons/cart.svg";
 
-interface CartProps {
+interface CartProps { 
   url?: string; // Make the URL prop optional
 }
 

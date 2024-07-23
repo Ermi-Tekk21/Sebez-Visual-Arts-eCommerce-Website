@@ -9,6 +9,10 @@ import { Button } from "@/components/ui/button";
 import EditProfile from "@/components/global/editProfile";
 import { toast } from "@/components/ui/use-toast";
 
+interface userData {
+
+}
+
 const Profile = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const router = useRouter();
@@ -24,6 +28,7 @@ const Profile = () => {
     role: string;
     password: string;
   }) => {
+    console.log("edited profile: ", user);
     const token = localStorage.getItem("token");
     try {
       const response = await axios.put(
@@ -48,11 +53,11 @@ const Profile = () => {
       });
 
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err);
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: `${err.response.data}`,
+        description: "unable to update",
       });
     }
   };
@@ -74,6 +79,8 @@ const Profile = () => {
           },
         });
         setUserData(response.data);
+        console.log("User data testing: ",userData);
+        
       } catch (error) {
         console.log(error);
       }

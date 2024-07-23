@@ -4,7 +4,7 @@ import "./globals.css";
 import NavBar from "@/components/global/nav-bar";
 import Footer from "@/components/global/footer";
 import { usePathname } from "next/navigation";
-
+import { Toaster } from "@/components/ui/toaster"
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
@@ -28,6 +28,7 @@ export default function RootLayout({
         {!isAdminRoute && <NavBar />}
         <main>{children}</main>
         {!isAdminRoute && <Footer />}
+        <Toaster />
       </body>
     </html>
   );

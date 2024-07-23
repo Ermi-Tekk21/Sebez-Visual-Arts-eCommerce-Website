@@ -8,7 +8,7 @@ import ArtImage from "../../../public/assets/images/art-4.jpg";
 import BackgroundImage from "../../../public/assets/images/hero.jpg";
 import axios from "axios";
 
-const AdminPage: React.FC = () => {
+const ArtistPage: React.FC = () => {
   const [userData, setUserData] = useState<any>({});
   const router = useRouter();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -40,14 +40,13 @@ const AdminPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (userData.role && userData.role !== "admin") {
+    if (userData.role && userData.role !== "artist") {
       router.push(`/${userData.role}`);
     }
     if (!isAuthenticated) {
       logout();
     }
   }, [userData, isAuthenticated, router, logout]);
-
   return (
     <main
       id="home"
@@ -62,7 +61,7 @@ const AdminPage: React.FC = () => {
           className="opacity-70"
         />
       </div>
-      <div className="relative w-3/4 m-auto bg-custom-green-c shadow-md rounded-tl-2xl rounded-br-2xl p-8 flex items-center gap-20 bg-opacity-80">
+      <div className="relative w-3/4 m-auto bg-custom-green-c shadow-md rounded-tl-2xl  rounded-br-2xl p-8 flex items-center gap-20 bg-opacity-80">
         <div className="flex-shrink-0">
           <Image
             src={ArtImage}
@@ -74,9 +73,12 @@ const AdminPage: React.FC = () => {
         </div>
         <div>
           <h1 className="text-4xl font-bold text-black mb-4">
-            Welcome to{" "}
-            <span className="text-custom-green-d"> Sebez Visual Arts</span>{" "}
-            Dashboard.
+            Welcome to
+            <span className="text-custom-green-d ">
+              {" "}
+              Sebez Visual Arts
+            </span>{" "}
+            ARTIST's Dashboard.
           </h1>
           <h2 className="text-2xl font-semibold text-black mb-4">
             Connect with Creativity
@@ -91,4 +93,4 @@ const AdminPage: React.FC = () => {
   );
 };
 
-export default AdminPage;
+export default ArtistPage;

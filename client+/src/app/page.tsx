@@ -1,7 +1,5 @@
 "use client";
 import React from "react";
-import NavBar from "@/components/global/nav-bar";
-import Footer from "@/components/global/footer";
 import LandingPage from "@/components/landingPage/landing-page";
 import ProductPage from "@/components/landingPage/product-page";
 import ContactUsPage from "@/components/landingPage/contact-us";

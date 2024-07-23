@@ -5,6 +5,7 @@ import Image from "next/image";
 import BackgroundImage from "../../../../public/assets/images/hero.jpg";
 import useAuthStore from "@/stores/AuthStore";
 import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/use-toast";
 
 const AddProduct = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -21,11 +22,9 @@ const AddProduct = () => {
     description: "",
     quantity: 1,
     price: "",
-    imageUrl: "" // Initialize imageUrl state
+    imageUrl: ""
   });
 
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -48,19 +47,26 @@ const AddProduct = () => {
           },
         }
       );
-      setSuccess("Product added successfully!");
-      setError("");
+
+      toast({
+        variant: "default",
+        description: "Product added successfully!",
+      });
+
       setFormData({
         category: "Drawings",
         item_name: "",
         description: "",
         quantity: 1,
         price: "",
-        imageUrl: "" // Reset imageUrl after successful submission
+        imageUrl: "" 
       });
     } catch (error) {
-      setError(error.response ? error.response.data : "Something went wrong");
-      setSuccess("");
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error.response ? error.response.data : "Something went wrong",
+      });
     }
   };
 
@@ -75,11 +81,12 @@ const AddProduct = () => {
           className="opacity-40"
         />
       </div>
-      <div className="bg-white z-10 p-8 rounded shadow-md w-full max-w-md">
+      <div className="bg-white z-10 p-8 rounded shadow-md w-full max-w-[600px]">
         <h2 className="text-2xl font-bold mb-6 text-center">Add Product</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        {success && <p className="text-green-500 mb-4">{success}</p>}
-        <form onSubmit={handleSubmit}>
+        <form className=" gap-2" onSubmit={handleSubmit}>
+          <div className="flex gap-10 justify-between">
+
+          <div>
           <div className="mb-4">
             <label className="block text-gray-700 font-semibold mb-2">
               Category
@@ -123,7 +130,10 @@ const AddProduct = () => {
               required
             />
           </div>
-          <div className="mb-4">
+          
+          </div>
+         <div>
+         <div className="mb-4">
             <label className="block text-gray-700 font-semibold mb-2">
               Quantity
             </label>
@@ -137,7 +147,7 @@ const AddProduct = () => {
               min="1"
             />
           </div>
-          <div className="mb-4">
+         <div className="mb-4">
             <label className="block text-gray-700 font-semibold mb-2">
               Price
             </label>
@@ -163,7 +173,11 @@ const AddProduct = () => {
               required
             />
           </div>
-          <button
+          
+         </div>
+          </div>
+         
+         <button
             type="submit"
             className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-200"
           >

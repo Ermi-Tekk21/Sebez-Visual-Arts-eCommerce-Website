@@ -6,6 +6,9 @@ import Image from "next/image";
 import BackgroundImage from "../../../../public/assets/images/hero.jpg";
 import useAuthStore from "@/stores/AuthStore";
 import { useRouter } from "next/navigation";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "@/components/ui/use-toast";
+import DeleteModal from "@/components/global/DeleteModal";
 
 type Product = {
   _id: string;
@@ -18,10 +21,20 @@ type Product = {
 
 const GetProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<string>();
+  const [prodIdToDelete, setProdIdToDelete] = useState<string | null>(null);
+  const [isModalOpenDel, setModalOpenDel] = useState(false);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const router = useRouter();
+
+  const handleOpenModalDel = (productId: string) => {
+    setProdIdToDelete(productId);
+    setModalOpenDel(true);
+  };
+
+  const handleCloseModalDel = () => {
+    setProdIdToDelete(null);
+    setModalOpenDel(false);
+  };
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -58,7 +71,7 @@ const GetProducts: React.FC = () => {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (productId: string) => {
+  const handleDelete = async () => {
     const token = localStorage.getItem("token");
     try {
       if (!token) {
@@ -66,7 +79,7 @@ const GetProducts: React.FC = () => {
       }
 
       const response = await axios.delete(
-        `http://localhost:8000/api/product/deleteProduct/${productId}`,
+        `http://localhost:8000/api/product/deleteProduct/${prodIdToDelete}`,
         {
           headers: {
             "x-auth-token": token,
@@ -75,11 +88,14 @@ const GetProducts: React.FC = () => {
       );
 
       if (response.status === 202) {
-        // Update local state after successful deletion
         setProducts((prevProducts) =>
-          prevProducts.filter((product) => product._id !== productId)
+          prevProducts.filter((product) => product._id !== prodIdToDelete)
         );
-        setMessage("Product deleted successfully");
+        // setMessage("Product deleted successfully");
+        toast({
+          variant: "default",
+          description: "Product deleted successfully",
+        });
       } else {
         throw new Error("Failed to delete product.");
       }
@@ -90,10 +106,21 @@ const GetProducts: React.FC = () => {
         error.response.data &&
         error.response.data.message
       ) {
-        setError(error.response.data.message);
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: `${error.response.data.message}`,
+        });
       } else {
         setError("Something went wrong");
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "Something went wrong",
+        });
       }
+    } finally {
+      handleCloseModalDel();
     }
   };
 
@@ -110,10 +137,9 @@ const GetProducts: React.FC = () => {
       </div>
       <div className="bg-white z-10 p-8 rounded shadow-md w-full max-w-4xl">
         <h2 className="text-2xl font-bold mb-6 text-center">Products</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        {message && <p className="text-green-500 mb-4">{message}</p>}
+        <ScrollArea className="h-[500px] rounded-md border">
         <table className="w-full table-auto">
-          <thead>
+          <thead className="sticky top-0 bg-white bg-opacity-95">
             <tr>
               <th className="px-4 py-2">Category</th>
               <th className="px-4 py-2">Item Name</th>
@@ -131,9 +157,9 @@ const GetProducts: React.FC = () => {
                 <td className="border px-4 py-2">{product.description}</td>
                 <td className="border px-4 py-2">{product.quantity}</td>
                 <td className="border px-4 py-2">{product.price}</td>
-                <td className="border px-4 py-2">
+                <td className="border px-4 py-2 flex justify-center">
                   <button
-                    onClick={() => handleDelete(product._id)}
+                    onClick={() => handleOpenModalDel(product._id)}
                     className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition duration-200 mr-2"
                   >
                     Delete
@@ -143,7 +169,15 @@ const GetProducts: React.FC = () => {
             ))}
           </tbody>
         </table>
+        </ScrollArea>
       </div>
+      {isModalOpenDel && (
+        <DeleteModal
+          isOpen={isModalOpenDel}
+          onClose={handleCloseModalDel}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 };
